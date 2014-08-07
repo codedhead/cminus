@@ -1,0 +1,7 @@
+#ifndef _YANJUN_NTTOKEN_H_
+#define _YANJUN_NTTOKEN_H_
+#include "yacclimits.h"
+enum NONTERMINALS{
+program=NONTERM_BASE,specifier,single_var_declaration,dec_array_index,type_specifier,single_var_declaration_s,declarator,params,param_list,ref_array_index,factor,unary_expression,term,additive_expression,relational_expression,logical_and_expression,logical_or_expression,conditional_expression,expression,while_clause,for_head,for_condition,do,do_statement,arg_list,args,declaration_list,declaration,var_declaration,fun_declaration,compound_stmt,declarator_list,left_brace,local_declarations,statement_list,statement,expression_stmt,selection_stmt,iteration_stmt,jump_stmt,if_expression,if_clause,if_clause_else,while,for_start,unary_op,
+};
+#endif

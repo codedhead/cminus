@@ -1,0 +1,128 @@
+	int s,a;
+	
+	sstack.init();
+
+	a=yylex();
+	if(a==0) return true;
+	else if(a==-1) return false;
+
+	while(true)
+	{
+		s=sstack.peek().state;
+
+		/* hack ***********************/
+		if(a==DEC_ID&&!parseAction[s][a].action)
+			a=ID;
+		if(a==DEC_NUM&&!parseAction[s][a].action)
+			a=NUM;
+
+		switch(parseAction[s][a].action)
+		{
+		case 's':
+			sstack.push(StackEntry(parseAction[s][a].param,yylval));
+			a=yylex();
+			if(a==0) a=TERMEOF;
+			else if(a==-1)
+			{
+				printf("lr parse error: error from yylex, stop parsing.\n");
+				return false;
+			}
+			break;
+		case 'r':
+			{
+				int rnum=parseAction[s][a].param;
+				YYSTYPE curval=yylval;
+				/* handle sematic actions */
+$$$$$$$$$$$$$$$$
+
+				int *p=Rules[rnum].body;
+				printf("%s -> ",nontermString[Rules[rnum].lhs]);
+				while(*p)
+				{
+					if(*p==TERMEMPTY)
+						printf("¦Å ");
+					else if(*p<TERMEOF)
+						printf("%c ",*p);
+					else if(*p<NONTERM_BASE)
+						printf("%s ",termString[*p-TERM_BASE]);
+					else
+						printf("%s ",nontermString[*p-NONTERM_BASE]);
+					if(*p!=TERMEMPTY) sstack.pop();
+					p++;
+				}
+				printf("\n");
+				/*-NONTERM_BASE*/
+				sstack.push(StackEntry(parseGoto[sstack.peek().state][Rules[rnum].lhs],curval));	
+			}
+			break;
+		case 'a':
+			return true;
+		default:
+			parseerror("unknown error, stop parsing.");
+			return false;
+		}			
+	}
+}
+
+void Parser::parseerror(char* str)
+{
+	printf("lr parse error: %s\n",str);
+}
+
+
+Stack::Stack()
+{
+	init();
+}
+
+Stack::~Stack()
+{
+}
+
+bool Stack::isEmpty()
+{
+	return _top==-1;
+}
+
+bool Stack::isFull()
+{
+	return _top>=PARSESTACK_SIZE-1;
+}
+
+const StackEntry& Stack::peek()
+{
+	if(!isEmpty())
+		return element[_top];
+}
+
+void Stack::pop()
+{
+	if(!isEmpty())
+		--_top;
+}
+
+StackEntry& Stack::getAt(int n)
+{
+	if(n>=0&&n<=_top)
+		return element[n];
+}
+
+int Stack::top()
+{
+	return _top;
+}
+
+void Stack::init()
+{
+	element[0]=StackEntry(0);
+	_top=0;
+}
+
+bool Stack::push(const StackEntry& x)
+{
+	if(isFull()) return false;
+
+	_top++;	
+	element[_top]=x;
+	return true;
+}
