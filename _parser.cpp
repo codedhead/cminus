@@ -472,6 +472,24 @@ char termString[][50]={
 char nontermString[][50]={
 "program","specifier","single_var_declaration","dec_array_index","type_specifier","single_var_declaration_s","declarator","params","param_list","ref_array_index","factor","unary_expression","term","additive_expression","relational_expression","logical_and_expression","logical_or_expression","conditional_expression","expression","while_clause","for_head","for_condition","do","do_statement","arg_list","args","declaration_list","declaration","var_declaration","fun_declaration","compound_stmt","declarator_list","left_brace","local_declarations","statement_list","statement","expression_stmt","selection_stmt","iteration_stmt","jump_stmt","if_expression","if_clause","if_clause_else","while","for_start","unary_op",
 };
+
+void printReduction(int lhs,int* p)
+{
+	printf("%s -> ",nontermString[lhs]);
+	while(*p)
+	{
+		if(*p==TERMEMPTY)
+			printf("¦Å ");
+		else if(*p<TERMEOF)
+			printf("%c ",*p);
+		else if(*p<NONTERM_BASE)
+			printf("%s ",termString[*p-TERM_BASE]);
+		else
+			printf("%s ",nontermString[*p-NONTERM_BASE]);
+		p++;
+	}
+	printf("\n");
+}
 bool Parser::yyparse(char* symbols)
 {
 	int s,a;
@@ -507,6 +525,9 @@ bool Parser::yyparse(char* symbols)
 		case 'r':
 			{
 				int rnum=parseAction[s][a].param;
+
+				printReduction(Rules[rnum].lhs,Rules[rnum].body);
+
 				YYSTYPE curval=yylval;
 				/* handle sematic actions */
 				{
@@ -784,22 +805,7 @@ bool Parser::yyparse(char* symbols)
 					}
 				}
 
-				int *p=Rules[rnum].body;/*
-				printf("%s -> ",nontermString[Rules[rnum].lhs]);
-				while(*p)
-				{
-					if(*p==TERMEMPTY)
-						printf("¦Å ");
-					else if(*p<TERMEOF)
-						printf("%c ",*p);
-					else if(*p<NONTERM_BASE)
-						printf("%s ",termString[*p-TERM_BASE]);
-					else
-						printf("%s ",nontermString[*p-NONTERM_BASE]);
-					if(*p!=TERMEMPTY) sstack.pop();
-					p++;
-				}
-				printf("\n");*/
+				int *p=Rules[rnum].body;
 				while(*p)
 				{
 					if(*p!=TERMEMPTY) sstack.pop();

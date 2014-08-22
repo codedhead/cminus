@@ -314,7 +314,7 @@ Operand CMinus::addQuad(int op,Operand& arg1,Operand& arg2)
 			return none;
 		}
 	}
-	else if(arg2.type==OPERAND_SYM&&arg2.syminfo->pointer)
+	else if(arg2.type==OPERAND_SYM&&arg2.syminfo->pointer) // num+array_pointer wtf!!!
 	{
 		if((arg1.type==OPERAND_NUM||(arg1.type==OPERAND_SYM&&arg1.syminfo->type==INT&&arg1.syminfo->kind==KIND_VARIABLE))&&op==OP_ADD)
 		{
@@ -450,7 +450,7 @@ Operand CMinus::addCall(char* str,ArgsInfo* args)
 					continue;
 				else cminuserror(q->opr,"argument type and param type not compatible.");
 			}
-			else if(!TYPE_COMPATIBLE(q->opr.syminfo->type,p->syminfo->type))
+			else if(!TYPE_COMPATIBLE(q->opr.syminfo->type,p->syminfo->type)) // char -> int wtf!!!
 				cminuserror(q->opr,"argument type and param type not compatible.");
 			else if(q->opr.type==OPERAND_ARR&&p->syminfo->kind!=KIND_VARIABLE)
 				cminuserror(q->opr,"argument type and param type not compatible.");
